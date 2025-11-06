@@ -1,3 +1,4 @@
+
 let currentChart = null;
 
 
@@ -227,32 +228,42 @@ const graphData = {
 };
 
 
+function isMobile() {
+    return window.innerWidth <= 768;
+}
+
 function createChart(graphKey) {
     const canvas = document.getElementById('mainChart');
     const ctx = canvas.getContext('2d');
     const description = document.getElementById('chartDescription');
     
-    
+    // Знищуємо попередній графік якщо він існує
     if (currentChart) {
         currentChart.destroy();
     }
     
     const graph = graphData[graphKey];
+    const mobile = isMobile();
     
-    
+    // Базові налаштування для всіх графіків
     const config = {
         type: graph.type,
         data: graph.data,
         options: {
             responsive: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: !mobile,
+            aspectRatio: mobile ? 1 : 2,
             plugins: {
                 legend: {
+                    display: true,
+                    position: mobile ? 'bottom' : 'top',
                     labels: {
                         color: '#e0e0e0',
                         font: {
-                            size: 14
-                        }
+                            size: mobile ? 10 : 14
+                        },
+                        padding: mobile ? 8 : 10,
+                        boxWidth: mobile ? 30 : 40
                     }
                 },
                 title: {
@@ -260,16 +271,33 @@ function createChart(graphKey) {
                     text: graph.title,
                     color: '#00d9ff',
                     font: {
-                        size: 18,
+                        size: mobile ? 12 : 18,
                         weight: 'bold'
+                    },
+                    padding: {
+                        top: mobile ? 5 : 10,
+                        bottom: mobile ? 10 : 20
                     }
+                },
+                tooltip: {
+                    titleFont: {
+                        size: mobile ? 11 : 14
+                    },
+                    bodyFont: {
+                        size: mobile ? 10 : 13
+                    },
+                    padding: mobile ? 8 : 12
                 }
             },
             scales: graph.scales || {
                 y: {
                     beginAtZero: true,
                     ticks: {
-                        color: '#e0e0e0'
+                        color: '#e0e0e0',
+                        font: {
+                            size: mobile ? 9 : 12
+                        },
+                        maxTicksLimit: mobile ? 6 : 10
                     },
                     grid: {
                         color: 'rgba(255, 255, 255, 0.1)'
@@ -277,7 +305,12 @@ function createChart(graphKey) {
                 },
                 x: {
                     ticks: {
-                        color: '#e0e0e0'
+                        color: '#e0e0e0',
+                        font: {
+                            size: mobile ? 8 : 12
+                        },
+                        maxRotation: mobile ? 45 : 0,
+                        minRotation: mobile ? 45 : 0
                     },
                     grid: {
                         color: 'rgba(255, 255, 255, 0.1)'
@@ -287,21 +320,44 @@ function createChart(graphKey) {
         }
     };
     
-    
     if (graph.scales) {
-        config.options.scales.y.ticks = { color: '#e0e0e0' };
-        config.options.scales.y.grid = { color: 'rgba(255, 255, 255, 0.1)' };
-        config.options.scales.y1.ticks = { color: '#e0e0e0' };
-        config.options.scales.y1.grid = { color: 'rgba(255, 255, 255, 0.1)' };
+        config.options.scales.y = {
+            ...graph.scales.y,
+            ticks: { 
+                color: '#e0e0e0',
+                font: {
+                    size: mobile ? 9 : 12
+                },
+                maxTicksLimit: mobile ? 5 : 8
+            },
+            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+        };
+        config.options.scales.y1 = {
+            ...graph.scales.y1,
+            ticks: { 
+                color: '#e0e0e0',
+                font: {
+                    size: mobile ? 9 : 12
+                },
+                maxTicksLimit: mobile ? 5 : 8
+            },
+            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+        };
         config.options.scales.x = {
-            ticks: { color: '#e0e0e0' },
+            ticks: { 
+                color: '#e0e0e0',
+                font: {
+                    size: mobile ? 8 : 12
+                },
+                maxRotation: mobile ? 45 : 0,
+                minRotation: mobile ? 45 : 0
+            },
             grid: { color: 'rgba(255, 255, 255, 0.1)' }
         };
     }
     
-    
+
     currentChart = new Chart(ctx, config);
-    
     
     description.innerHTML = `
         <h3>${graph.title}</h3>
@@ -313,21 +369,18 @@ function createChart(graphKey) {
 document.addEventListener('DOMContentLoaded', function() {
     const buttons = document.querySelectorAll('.graph-btn');
     
-    
     createChart('explosions');
     
     buttons.forEach(button => {
         button.addEventListener('click', function() {
-            
+
             buttons.forEach(btn => btn.classList.remove('active'));
-            
             
             this.classList.add('active');
             
-            
             const graphKey = this.getAttribute('data-graph');
             
-            
+
             const keyMap = {
                 'explosions': 'explosions',
                 'alarms-time': 'alarmsTime',
@@ -341,9 +394,7 @@ document.addEventListener('DOMContentLoaded', function() {
             createChart(keyMap[graphKey]);
         });
     });
-    
-   
-    document.querySelectorAll('nav a').forEach(anchor => {
+        document.querySelectorAll('nav a').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
             const targetId = this.getAttribute('href');
@@ -356,5 +407,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         });
+    });
+    
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+            const activeButton = document.querySelector('.graph-btn.active');
+            if (activeButton) {
+                const graphKey = activeButton.getAttribute('data-graph');
+                const keyMap = {
+                    'explosions': 'explosions',
+                    'alarms-time': 'alarmsTime',
+                    'business-loss': 'businessLoss',
+                    'odesa-rent': 'odesaRent',
+                    'mykolaiv-rent': 'mykolaivRent',
+                    'kherson-rent': 'khersonRent'
+                };
+                createChart(keyMap[graphKey]);
+            }
+        }, 250);
     });
 });
