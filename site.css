@@ -306,3 +306,10 @@ section {
     background: #00d9ff;
 
 }
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.5rem;
+        line-height: 1.3;
+}
+
