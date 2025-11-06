@@ -278,7 +278,7 @@ section {
     background: #00d9ff;
 }
 
-/* Адаптивність для планшетів та телефонів */
+
 @media (max-width: 768px) {
     header h1 {
         font-size: 1.5rem;
@@ -336,7 +336,7 @@ section {
     }
 }
 
-/* Додаткова адаптивність для маленьких телефонів */
+
 @media (max-width: 480px) {
     header h1 {
         font-size: 1.3rem;
@@ -368,3 +368,5 @@ section {
         font-size: 0.9rem;
     }
 }
+}
+
