@@ -475,6 +475,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 250);
     });
 });
-    });
 });
+
 
