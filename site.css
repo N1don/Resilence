@@ -16,9 +16,23 @@ header {
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     color: #00d9ff;
     text-align: center;
-    padding: 3rem 1rem;
+    padding: 2rem 1rem 3rem;
     box-shadow: 0 4px 20px rgba(0, 217, 255, 0.3);
     border-bottom: 2px solid #00d9ff;
+}
+
+.header-top {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.8rem 1rem;
+    margin: -2rem -1rem 1.5rem;
+    border-bottom: 1px solid rgba(0, 217, 255, 0.3);
+}
+
+.header-top p {
+    margin: 0.2rem 0;
+    font-size: 0.85rem;
+    color: #a0a0a0;
+    opacity: 0.9;
 }
 
 header h1 {
@@ -31,6 +45,21 @@ header p {
     font-size: 1.2rem;
     opacity: 0.9;
     color: #a0a0a0;
+}
+
+.header-authors {
+    background: rgba(0, 217, 255, 0.1);
+    padding: 1rem;
+    margin: 1.5rem auto 0;
+    max-width: 800px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 217, 255, 0.3);
+}
+
+.header-authors p {
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
+    color: #e0e0e0;
 }
 
 nav {
@@ -278,7 +307,7 @@ section {
     background: #00d9ff;
 }
 
-
+/* Адаптивність для планшетів та телефонів */
 @media (max-width: 768px) {
     header h1 {
         font-size: 1.5rem;
@@ -336,7 +365,7 @@ section {
     }
 }
 
-
+/* Додаткова адаптивність для маленьких телефонів */
 @media (max-width: 480px) {
     header h1 {
         font-size: 1.3rem;
@@ -367,6 +396,5 @@ section {
     .stat-box p {
         font-size: 0.9rem;
     }
-}
 }
 
